@@ -12,6 +12,7 @@ import com.stripe.param.ProductCreateParams;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,11 +21,12 @@ import org.springframework.stereotype.Service;
 
 public class StripePaymentService implements PaymentService{
 
-
+    @Value("${stripe.secretKey}")
+    private String stripeKey;
 
     @Override
     public String createPaymentLink(String orderId, Long amount) throws StripeException {
-        Stripe.apiKey = "sk_test_51Px82oGZMqN50czi3osEbIkSjNNbYRkF0PSmA9S6p0SfOtrX3F5xqYLKL5wEoWca0ipUMNpLBxOStyGB7fUE9Ndx00JSZg8szR";
+        Stripe.apiKey = stripeKey;
         ProductCreateParams productParams = ProductCreateParams.builder()
                 .setName("Sample Product")
                 .build();
@@ -33,7 +35,7 @@ public class StripePaymentService implements PaymentService{
         Product product = Product.create(productParams);
         PriceCreateParams priceCreateParams =
                 PriceCreateParams.builder()
-                        .setCurrency("usd")
+                        .setCurrency("inr")
                         .setUnitAmount(amount)
                         .setProduct(product.getId())
                         .build();
